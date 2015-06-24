@@ -6,6 +6,7 @@ import (
 	"encoding/xml"
 	"io"
 	"log"
+	"os"
 )
 
 const (
@@ -18,9 +19,12 @@ const (
 	NOT_FOUND_ERR     = "NOT FOUND"
 )
 
+var logg = log.New(os.Stdout, "[TRASH] ", 0)
+
 type Err interface {
 	Send(io.Writer) Err
 	Log() Err
+	Text() string
 }
 
 type Error struct {
@@ -40,8 +44,12 @@ func (j JsonErr) Send(w io.Writer) Err {
 }
 
 func (j JsonErr) Log() Err {
-	log.Printf("\x1b[%s%s\x1b[0m \"%s\" ", "41m", j.Type, j.Message)
+	logg.Printf("\x1b[%s%s\x1b[0m \"%s\" ", "41m", j.Type, j.Message)
 	return j
+}
+
+func (j JsonErr) Text() string {
+	return j.Message
 }
 
 type XmlErr struct {
@@ -54,8 +62,12 @@ func (x XmlErr) Send(w io.Writer) Err {
 }
 
 func (x XmlErr) Log() Err {
-	log.Printf("\x1b[%s%s\x1b[0m \"%s\" ", "41m", x.Type, x.Message)
+	logg.Printf("\x1b[%s%s\x1b[0m \"%s\" ", "41m", x.Type, x.Message)
 	return x
+}
+
+func (x XmlErr) Text() string {
+	return x.Message
 }
 
 func NewErr(err string, message string, format string) Err {
