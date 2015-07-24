@@ -1,22 +1,26 @@
 package trash
 
 import (
-	"crypto/md5"
+	"encoding/base64"
 	"encoding/json"
 	"encoding/xml"
 	"io"
 	"log"
 	"os"
+	"time"
 )
 
 const (
-	DB_ERR            = "DB ERROR"
-	AUTH_ERR          = "AUTHENTIFICATION ERROR"
-	BAD_REQUEST_ERR   = "BAD REQUEST"
-	INVALID_JSON_ERR  = "INVALID JSON"
-	INTERNAL_ERR      = "INTERNAL SERVER ERROR"
-	ALREADY_EXIST_ERR = "ALREADY EXIST ERROR"
-	NOT_FOUND_ERR     = "NOT FOUND"
+	DB_ERR              = "DATABASE ERROR"
+	AUTH_ERR            = "AUTHENTIFICATION ERROR"
+	BAD_REQUEST_ERR     = "BAD REQUEST"
+	INVALID_JSON_ERR    = "INVALID JSON"
+	INVALID_DATA_ERR    = "INVALID DATA "
+	INTERNAL_ERR        = "INTERNAL SERVER ERROR"
+	ALREADY_EXIST_ERR   = "ALREADY EXIST"
+	NOT_FOUND_ERR       = "NOT FOUND"
+	FILE_ERR            = "FILE ERROR"
+	DESERIALIZATION_ERR = "DESERIALIZATION ERROR"
 )
 
 var logg = log.New(os.Stdout, "[TRASH] ", 0)
@@ -71,12 +75,12 @@ func (x XmlErr) Text() string {
 }
 
 func NewErr(err string, message string, format string) Err {
-	checksum := md5.Sum([]byte(err + message + format))
+	checksum := base64.StdEncoding.EncodeToString([]byte(err + time.Now().String()))
 	switch format {
 	case "json":
-		return JsonErr{Error: Error{string(checksum[:]), err, message, 0}}
+		return JsonErr{Error: Error{checksum, err, message, 0}}
 	case "xml":
-		return XmlErr{Error: Error{string(checksum[:]), err, message, 0}}
+		return XmlErr{Error: Error{checksum, err, message, 0}}
 	default:
 		return nil
 	}

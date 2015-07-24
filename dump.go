@@ -1,7 +1,10 @@
 package trash
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"io"
+	"time"
 )
 
 type Dump struct {
@@ -10,12 +13,12 @@ type Dump struct {
 	Writer io.Writer
 }
 
-func NewDump(w io.Writer, f string) *Dump {
-	return &Dump{make(map[string]Err), f, w}
+func NewDump(w io.Writer, format string) *Dump {
+	return &Dump{make(map[string]Err), format, w}
 }
 
 func (d *Dump) Insert(t string, err string) {
-	d.Errs[err] = NewErr(t, err, d.Format)
+	d.Errs[time.Now().String()] = NewErr(t, err, d.Format)
 }
 
 func (d *Dump) Remove(err Err) {
@@ -26,10 +29,37 @@ func (d *Dump) Get(err string) Err {
 	return d.Errs[err]
 }
 
-func (d *Dump) Catch(err string) {
-	if d.Errs[err] == nil {
-		d.Errs[err] = NewErr(err, err, d.Format)
+func (d *Dump) Catch(err string, message string) {
+	key := time.Now().String()
+	errorr := NewErr(err, message, d.Format)
+	d.Errs[key] = errorr
+	d.Errs[key].Send(d.Writer)
+	d.Errs[key].Log()
+}
+
+func (d *Dump) Drain() error {
+	data, err := json.MarshalIndent(d.Errs, "", "  ")
+	if err != nil {
+		return err
 	}
-	d.Errs[err].Send(d.Writer)
-	d.Errs[err].Log()
+	_, err = d.Writer.Write(data)
+	if err != nil {
+		return err
+	}
+	d.Errs = make(map[string]Err)
+	return nil
+}
+
+func (d *Dump) NewErr(err string, message string) Err {
+	checksum := base64.StdEncoding.EncodeToString([]byte(err + time.Now().String()))
+	switch d.Format {
+	case "json":
+		d.Insert(err, message)
+		return JsonErr{Error: Error{checksum, err, message, 0}}
+	case "xml":
+		d.Insert(err, message)
+		return XmlErr{Error: Error{checksum, err, message, 0}}
+	default:
+		return nil
+	}
 }
