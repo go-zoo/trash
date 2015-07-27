@@ -26,7 +26,7 @@ A dump need a `io.Writer` to save the errors stack.
       d.NewErr(trash.INVALID_DATA_ERR, "1 not equal 2")
     }
     // Write the dump to the io.Writer
-    d.Drain()
+    d.Dump()
   }
 
 ```
