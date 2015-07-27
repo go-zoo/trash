@@ -37,7 +37,7 @@ func (d *Dump) Catch(err string, message string) {
 	d.Errs[key].Log()
 }
 
-func (d *Dump) Drain() error {
+func (d *Dump) Dump() error {
 	data, err := json.MarshalIndent(d.Errs, "", "  ")
 	if err != nil {
 		return err
