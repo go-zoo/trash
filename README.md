@@ -18,11 +18,12 @@ Creating a new err.
 
     if 1 != 2 {
       // Default Err
+      // Arguments (Error Type, Error Message) -> (string, string)
       t.NewErr(trash.GenericErr, "example err").Send(rw).Log()
 
       // HTTP Err
       t.NewErr(trash.GenericErr, "useless error").SendHTTP(rw, 404).LogHTTP(req)
-      
+
       // Standalone inline HTTP error declaring
       trash.NewJSONErr(trash.InvalidDataErr, "1 not equal 2 ...").LogHTTP(req).SendHTTP(rw, 406)
     }
