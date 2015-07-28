@@ -8,20 +8,6 @@ import (
 	"time"
 )
 
-const (
-	AlreadyExistErr    = "ALREADY EXIST"
-	AuthErr            = "AUTHENTIFICATION ERROR"
-	BadRequestErr      = "BAD REQUEST"
-	DbErr              = "DATABASE ERROR"
-	DeserializationErr = "DESERIALIZATION ERROR"
-	FileErr            = "FILE ERROR"
-	GenericErr         = "GENERIC ERROR"
-	InvalidJSONErr     = "INVALID JSON"
-	InvalidDataErr     = "INVALID DATA "
-	InternalEr         = "INTERNAL SERVER ERROR"
-	NotFoundErr        = "NOT FOUND"
-)
-
 var logg = log.New(os.Stdout, "[TRASH] ", 0)
 
 type genErr interface {

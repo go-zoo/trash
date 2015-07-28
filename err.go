@@ -5,6 +5,22 @@ import (
 	"net/http"
 )
 
+const (
+	AlreadyExistErr       = "ALREADY EXIST"
+	AuthErr               = "AUTHENTIFICATION ERROR"
+	BadRequestErr         = "BAD REQUEST"
+	DbErr                 = "DATABASE ERROR"
+	DeserializationErr    = "DESERIALIZATION ERROR"
+	FileErr               = "FILE ERROR"
+	GenericErr            = "GENERIC ERROR"
+	InvalidJSONErr        = "INVALID JSON"
+	InvalidXMLErr         = "INVALID XML ERROR"
+	InvalidDataErr        = "INVALID DATA "
+	InternalErr           = "INTERNAL SERVER ERROR"
+	NotFoundErr           = "NOT FOUND"
+	UnauthorizedAccessErr = "UNAUTHORIZED ACCESS ERROR"
+)
+
 // Err is the default interface for trash
 type Err interface {
 	Send(io.Writer) Err
