@@ -16,7 +16,7 @@ func (j JsonErr) Send(w io.Writer) Err {
 	return j
 }
 
-func (j JsonErr) SendHTTP(rw http.ResponseWriter, code int) Err {
+func (j JsonErr) SendHTTP(rw http.ResponseWriter, code int) HTTPErr {
 	rw.Header().Set("Content-Type", "application/json")
 	j.Code = code
 	rw.WriteHeader(code)
@@ -30,7 +30,7 @@ func (j JsonErr) Log() Err {
 	return j
 }
 
-func (j JsonErr) LogHTTP(req *http.Request) Err {
+func (j JsonErr) LogHTTP(req *http.Request) HTTPErr {
 	if runtime.GOOS != "windows" {
 		logg.Printf("\x1b[%s%s\x1b[0m %s (%s %s %s)", "41m", j.Error.Type, j.Error.Message, req.Method, req.RemoteAddr, req.RequestURI)
 	} else {

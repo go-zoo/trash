@@ -16,7 +16,7 @@ func (x XmlErr) Send(w io.Writer) Err {
 	return x
 }
 
-func (x XmlErr) SendHTTP(rw http.ResponseWriter, code int) Err {
+func (x XmlErr) SendHTTP(rw http.ResponseWriter, code int) HTTPErr {
 	rw.Header().Set("Content-Type", "application/xml")
 	x.Code = code
 	rw.WriteHeader(code)
@@ -25,7 +25,7 @@ func (x XmlErr) SendHTTP(rw http.ResponseWriter, code int) Err {
 	return x
 }
 
-func (x XmlErr) LogHTTP(req *http.Request) Err {
+func (x XmlErr) LogHTTP(req *http.Request) HTTPErr {
 	if runtime.GOOS != "windows" {
 		logg.Printf("\x1b[%s%s\x1b[0m %s (%s %s %s)", "41m", x.Error.Type, x.Error.Message, req.Method, req.RemoteAddr, req.RequestURI)
 	} else {

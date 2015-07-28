@@ -27,9 +27,14 @@ var logg = log.New(os.Stdout, "[TRASH] ", 0)
 
 type Err interface {
 	Send(io.Writer) Err
-	SendHTTP(http.ResponseWriter, int) Err
 	Log() Err
 	Text() string
+}
+
+type HTTPErr interface {
+	Err
+	SendHTTP(http.ResponseWriter, int) HTTPErr
+	LogHTTP(*http.Request) HTTPErr
 }
 
 type Error struct {
@@ -40,6 +45,18 @@ type Error struct {
 }
 
 func NewErr(err string, message string, format string) Err {
+	checksum := base64.StdEncoding.EncodeToString([]byte(time.Now().String()))
+	switch format {
+	case "json":
+		return JsonErr{Error: Error{checksum, err, message, 0}}
+	case "xml":
+		return XmlErr{Error: Error{checksum, err, message, 0}}
+	default:
+		return nil
+	}
+}
+
+func NewHTTPErr(err string, message string, format string) HTTPErr {
 	checksum := base64.StdEncoding.EncodeToString([]byte(time.Now().String()))
 	switch format {
 	case "json":
