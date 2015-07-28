@@ -23,49 +23,48 @@ const (
 
 var logg = log.New(os.Stdout, "[TRASH] ", 0)
 
+// Trash defined the Trash data structure
 type Trash struct {
 	Type   string
-	Format func(string, string) Err
+	format interface{}
+	//func(string, string) Err
 	Logger *log.Logger
 }
 
+// New create a new Trash with the provided logger and data format
 func New(logger *log.Logger, format string) *Trash {
 	t := &Trash{Logger: logger}
 	switch format {
 	case "json":
 		t.Type = "json"
-		t.Format = t.jsonErr
+		t.format = t.jsonErr
 	case "xml":
 		t.Type = "xml"
-		t.Format = t.xmlErr
+		t.format = t.xmlErr
 	}
 	return t
 }
 
+// NewErr generate a standard Err
 func (t *Trash) NewErr(err string, message string) Err {
-	er := t.Format(err, message)
-	return er
+	er := t.format.(func(string, string) Err) //(err, message)
+	return er(err, message)
 }
 
+// NewHTTPErr generate a new HTTPErr
 func (t *Trash) NewHTTPErr(err string, message string) HTTPErr {
-	checksum := base64.StdEncoding.EncodeToString([]byte(time.Now().String()))
-	switch t.Type {
-	case "json":
-		return JsonErr{Logger: t.Logger, errData: errData{checksum, err, message, 0}}
-	case "xml":
-		return XmlErr{Logger: t.Logger, errData: errData{checksum, err, message, 0}}
-	}
-	return nil
+	er := t.format.(func(string, string) HTTPErr)
+	return er(err, message)
 }
 
 // NewErr generate a new Err
-func (t *Trash) jsonErr(err string, message string) Err {
+func (t *Trash) jsonErr(err string, message string) HTTPErr {
 	checksum := base64.StdEncoding.EncodeToString([]byte(time.Now().String()))
 	return JsonErr{Logger: t.Logger, errData: errData{checksum, err, message, 0}}
 }
 
 // NewHTTPErr generate a new HTTPErr
-func (t *Trash) xmlErr(err string, message string) Err {
+func (t *Trash) xmlErr(err string, message string) HTTPErr {
 	checksum := base64.StdEncoding.EncodeToString([]byte(time.Now().String()))
 	return XmlErr{Logger: t.Logger, errData: errData{checksum, err, message, 0}}
 }
