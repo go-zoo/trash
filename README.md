@@ -4,7 +4,7 @@
 trash deal with logging, sending and stacking errors.
 Currently supporting json and xml format.
 
-![alt tag](http://www.contemporarynomad.com/wp-content/uploads/2007/12/blog_trash_cow3.jpg)
+![alt tag](http://lifescapesdesignblog.weebly.com/uploads/1/2/8/0/12806369/__6190365.jpg)
 
 ### Example
 Creating a new err.
