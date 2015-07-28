@@ -9,17 +9,24 @@ trash deal with logging, sending and stacking errors.
 Creating a new err.
 
 ``` go
+  import "log"
+
   func main() {
+    t := trash.New(logger, "json")
+
     if 1 != 2 {
-      // inline error declaring
-      trash.NewErr(trash.INVALID_DATA_ERR, "1 not equal 2 ...", "json").Log().Send(rw)
+      // Default Err
+      t.NewErr(trash.GenericErr, "example err").Send(rw).Log()
+
+      // Standalone inline HTTP error declaring
+      trash.NewJSONErr(trash.INVALID_DATA_ERR, "1 not equal 2 ...").LogHTTP(req).SendHTTP(rw)
     }
   }
 ```
 You can also create a dump. Which is an error stack you want to process in the same way.
-A dump need a `io.Writer` to save the errors stack. 
+A dump need a `io.Writer` to save the errors stack.
 
-``` go 
+``` go
   func main() {
     d := trash.NewDump(os.Stdout, "json")
     if 1 != 2 {
