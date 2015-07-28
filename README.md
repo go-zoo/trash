@@ -19,7 +19,7 @@ Creating a new err.
       t.NewErr(trash.GenericErr, "example err").Send(rw).Log()
 
       // Standalone inline HTTP error declaring
-      trash.NewJSONErr(trash.INVALID_DATA_ERR, "1 not equal 2 ...").LogHTTP(req).SendHTTP(rw)
+      trash.NewJSONErr(trash.INVALID_DATA_ERR, "1 not equal 2 ...").LogHTTP(req).SendHTTP(rw, 406)
     }
   }
 ```
