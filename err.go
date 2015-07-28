@@ -36,8 +36,8 @@ type HTTPErr interface {
 
 // Error is the default error type
 type errData struct {
-	ID      string `json:"id"`
-	Type    string `json:"type"`
-	Message string `json:"message"`
-	Code    int    `json:"code"`
+	ID      string `json:"id" xml:"id"`
+	Type    string `json:"type" xml:"type"`
+	Message string `json:"message" xml:"message"`
+	Code    int    `json:"code" xml:"code"`
 }

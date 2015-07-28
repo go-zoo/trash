@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-var logg = log.New(os.Stdout, "[TRASH] ", 0)
+var DefaultLogger = log.New(os.Stdout, "[TRASH] ", 0)
 
 type genErr interface {
 	Err

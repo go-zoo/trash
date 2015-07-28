@@ -15,7 +15,7 @@ type JsonErr struct {
 	errData `json:"error"`
 }
 
-// NewErr generate a new Err
+// NewJSONErr generate a new JSONErr
 func NewJSONErr(err string, message string) JsonErr {
 	checksum := base64.StdEncoding.EncodeToString([]byte(time.Now().String()))
 	return JsonErr{errData: errData{checksum, err, message, 0}}
@@ -40,7 +40,7 @@ func (j JsonErr) Log() Err {
 	if j.Logger != nil {
 		logger = j.Logger
 	} else {
-		logger = logg
+		logger = DefaultLogger
 	}
 	logger.Printf("\x1b[%s%s\x1b[0m %s ", "41m", j.Type, j.Message)
 	return j
@@ -51,7 +51,7 @@ func (j JsonErr) LogHTTP(req *http.Request) HTTPErr {
 	if j.Logger != nil {
 		logger = j.Logger
 	} else {
-		logger = logg
+		logger = DefaultLogger
 	}
 	if runtime.GOOS != "windows" {
 		logger.Printf("\x1b[%s%s\x1b[0m %s (%s %s %s)", "41m", j.errData.Type, j.errData.Message, req.Method, req.RemoteAddr, req.RequestURI)

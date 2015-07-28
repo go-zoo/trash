@@ -40,7 +40,7 @@ func (x XmlErr) Log() Err {
 	if x.Logger != nil {
 		logger = x.Logger
 	} else {
-		logger = logg
+		logger = DefaultLogger
 	}
 	logger.Printf("\x1b[%s%s\x1b[0m %s ", "41m", x.Type, x.Message)
 	return x
@@ -51,7 +51,7 @@ func (x XmlErr) LogHTTP(req *http.Request) HTTPErr {
 	if x.Logger != nil {
 		logger = x.Logger
 	} else {
-		logger = logg
+		logger = DefaultLogger
 	}
 	if runtime.GOOS != "windows" {
 		logger.Printf("\x1b[%s%s\x1b[0m %s (%s %s %s)", "41m", x.errData.Type, x.errData.Message, req.Method, req.RemoteAddr, req.RequestURI)
