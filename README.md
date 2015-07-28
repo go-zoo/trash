@@ -1,4 +1,4 @@
-# trash
+# trash [![Build Status](https://travis-ci.org/go-zoo/trash.svg?branch=master)](https://travis-ci.org/go-zoo/trash)
 
 ### What is trash ?
 trash deal with logging, sending and stacking errors.
