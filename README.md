@@ -1,4 +1,4 @@
-# trash [![Build Status](https://travis-ci.org/go-zoo/trash.svg?branch=master)](https://travis-ci.org/go-zoo/trash)
+# trash [![GoDoc](https://godoc.org/github.com/go-zoo/trash?status.svg)](https://godoc.org/github.com/go-zoo/trash) [![Build Status](https://travis-ci.org/go-zoo/trash.svg?branch=master)](https://travis-ci.org/go-zoo/trash)
 
 ### What is trash ?
 trash deal with logging, sending and stacking errors.
