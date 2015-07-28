@@ -22,7 +22,7 @@ func (d *Dump) Insert(t string, err string) {
 }
 
 func (d *Dump) Remove(err Err) {
-	delete(d.Errs, err.Text())
+	delete(d.Errs, err.Error())
 }
 
 func (d *Dump) Get(err string) Err {
@@ -55,10 +55,10 @@ func (d *Dump) NewErr(err string, message string) Err {
 	switch d.Format {
 	case "json":
 		d.Insert(err, message)
-		return JsonErr{Error: Error{checksum, err, message, 0}}
+		return JsonErr{errData: errData{checksum, err, message, 0}}
 	case "xml":
 		d.Insert(err, message)
-		return XmlErr{Error: Error{checksum, err, message, 0}}
+		return XmlErr{errData: errData{checksum, err, message, 0}}
 	default:
 		return nil
 	}

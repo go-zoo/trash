@@ -11,14 +11,14 @@ import (
 )
 
 type XmlErr struct {
-	Logger *log.Logger `xml:"-"`
-	Error  `xml:"error"`
+	Logger  *log.Logger `xml:"-"`
+	errData `xml:"error"`
 }
 
 // NewHTTPErr generate a new HTTPErr
 func NewXMLPErr(err string, message string) XmlErr {
 	checksum := base64.StdEncoding.EncodeToString([]byte(time.Now().String()))
-	return XmlErr{Error: Error{checksum, err, message, 0}}
+	return XmlErr{errData: errData{checksum, err, message, 0}}
 }
 
 func (x XmlErr) Send(w io.Writer) Err {
@@ -54,13 +54,13 @@ func (x XmlErr) LogHTTP(req *http.Request) HTTPErr {
 		logger = logg
 	}
 	if runtime.GOOS != "windows" {
-		logger.Printf("\x1b[%s%s\x1b[0m %s (%s %s %s)", "41m", x.Error.Type, x.Error.Message, req.Method, req.RemoteAddr, req.RequestURI)
+		logger.Printf("\x1b[%s%s\x1b[0m %s (%s %s %s)", "41m", x.errData.Type, x.errData.Message, req.Method, req.RemoteAddr, req.RequestURI)
 	} else {
-		logger.Printf("!%s! %s (%s %s %s)", x.Error.Type, x.Error.Message, req.Method, req.RemoteAddr, req.RequestURI)
+		logger.Printf("!%s! %s (%s %s %s)", x.errData.Type, x.errData.Message, req.Method, req.RemoteAddr, req.RequestURI)
 	}
 	return x
 }
 
-func (x XmlErr) Text() string {
+func (x XmlErr) Error() string {
 	return x.Message
 }

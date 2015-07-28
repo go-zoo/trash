@@ -9,7 +9,7 @@ import (
 type Err interface {
 	Send(io.Writer) Err
 	Log() Err
-	Text() string
+	Error() string
 }
 
 // HTTPErr is a upgrade from Err adding HTTP Send and Log
@@ -20,7 +20,7 @@ type HTTPErr interface {
 }
 
 // Error is the default error type
-type Error struct {
+type errData struct {
 	ID      string `json:"id"`
 	Type    string `json:"type"`
 	Message string `json:"message"`

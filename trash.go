@@ -51,9 +51,9 @@ func (t *Trash) NewHTTPErr(err string, message string) HTTPErr {
 	checksum := base64.StdEncoding.EncodeToString([]byte(time.Now().String()))
 	switch t.Type {
 	case "json":
-		return JsonErr{Logger: t.Logger, Error: Error{checksum, err, message, 0}}
+		return JsonErr{Logger: t.Logger, errData: errData{checksum, err, message, 0}}
 	case "xml":
-		return XmlErr{Logger: t.Logger, Error: Error{checksum, err, message, 0}}
+		return XmlErr{Logger: t.Logger, errData: errData{checksum, err, message, 0}}
 	}
 	return nil
 }
@@ -61,11 +61,11 @@ func (t *Trash) NewHTTPErr(err string, message string) HTTPErr {
 // NewErr generate a new Err
 func (t *Trash) jsonErr(err string, message string) Err {
 	checksum := base64.StdEncoding.EncodeToString([]byte(time.Now().String()))
-	return JsonErr{Logger: t.Logger, Error: Error{checksum, err, message, 0}}
+	return JsonErr{Logger: t.Logger, errData: errData{checksum, err, message, 0}}
 }
 
 // NewHTTPErr generate a new HTTPErr
 func (t *Trash) xmlErr(err string, message string) Err {
 	checksum := base64.StdEncoding.EncodeToString([]byte(time.Now().String()))
-	return XmlErr{Logger: t.Logger, Error: Error{checksum, err, message, 0}}
+	return XmlErr{Logger: t.Logger, errData: errData{checksum, err, message, 0}}
 }

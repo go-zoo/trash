@@ -11,14 +11,14 @@ import (
 )
 
 type JsonErr struct {
-	Logger *log.Logger `json:"-"`
-	Error  `json:"error"`
+	Logger  *log.Logger `json:"-"`
+	errData `json:"error"`
 }
 
 // NewErr generate a new Err
 func NewJSONErr(err string, message string) JsonErr {
 	checksum := base64.StdEncoding.EncodeToString([]byte(time.Now().String()))
-	return JsonErr{Error: Error{checksum, err, message, 0}}
+	return JsonErr{errData: errData{checksum, err, message, 0}}
 }
 
 func (j JsonErr) Send(w io.Writer) Err {
@@ -54,13 +54,13 @@ func (j JsonErr) LogHTTP(req *http.Request) HTTPErr {
 		logger = logg
 	}
 	if runtime.GOOS != "windows" {
-		logger.Printf("\x1b[%s%s\x1b[0m %s (%s %s %s)", "41m", j.Error.Type, j.Error.Message, req.Method, req.RemoteAddr, req.RequestURI)
+		logger.Printf("\x1b[%s%s\x1b[0m %s (%s %s %s)", "41m", j.errData.Type, j.errData.Message, req.Method, req.RemoteAddr, req.RequestURI)
 	} else {
-		logger.Printf("!%s! %s (%s %s %s)", j.Error.Type, j.Error.Message, req.Method, req.RemoteAddr, req.RequestURI)
+		logger.Printf("!%s! %s (%s %s %s)", j.errData.Type, j.errData.Message, req.Method, req.RemoteAddr, req.RequestURI)
 	}
 	return j
 }
 
-func (j JsonErr) Text() string {
+func (j JsonErr) Error() string {
 	return j.Message
 }
