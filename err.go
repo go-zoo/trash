@@ -14,7 +14,6 @@ type Err interface {
 
 // HTTPErr is a upgrade from Err adding HTTP Send and Log
 type HTTPErr interface {
-	Err
 	SendHTTP(http.ResponseWriter, int) HTTPErr
 	LogHTTP(*http.Request) HTTPErr
 }
