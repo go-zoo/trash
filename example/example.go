@@ -8,7 +8,7 @@ import (
 
 func main() {
 	http.HandleFunc("/", func(rw http.ResponseWriter, req *http.Request) {
-		trash.NewHTTPErr(trash.GENERIC_ERR, "Test Error", "json").SendHTTP(rw, 404).LogHTTP(req)
+		trash.NewHTTPErr(trash.GenericErr, "Test Error", "json").SendHTTP(rw, 404).LogHTTP(req)
 	})
 	http.ListenAndServe(":8080", nil)
 }
