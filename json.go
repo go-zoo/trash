@@ -42,7 +42,7 @@ func (j JsonErr) Log() Err {
 	} else {
 		logger = logg
 	}
-	logger.Printf("\x1b[%s%s\x1b[0m \"%s\" ", "41m", j.Type, j.Message)
+	logger.Printf("\x1b[%s%s\x1b[0m %s ", "41m", j.Type, j.Message)
 	return j
 }
 

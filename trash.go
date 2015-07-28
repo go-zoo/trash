@@ -33,7 +33,6 @@ type genErr interface {
 type Trash struct {
 	Type   string
 	format interface{}
-	//func(string, string) Err
 	Logger *log.Logger
 }
 
@@ -56,7 +55,7 @@ func New(logger *log.Logger, format string) *Trash {
 
 // NewErr generate a standard Err
 func (t *Trash) NewErr(err string, message string) Err {
-	er := t.format.(func(string, string) genErr) //(err, message)
+	er := t.format.(func(string, string) genErr)
 	return er(err, message)
 }
 

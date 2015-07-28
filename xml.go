@@ -42,7 +42,7 @@ func (x XmlErr) Log() Err {
 	} else {
 		logger = logg
 	}
-	logger.Printf("\x1b[%s%s\x1b[0m \"%s\" ", "41m", x.Type, x.Message)
+	logger.Printf("\x1b[%s%s\x1b[0m %s ", "41m", x.Type, x.Message)
 	return x
 }
 
