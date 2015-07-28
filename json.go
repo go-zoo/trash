@@ -1,14 +1,24 @@
 package trash
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"runtime"
+	"time"
 )
 
 type JsonErr struct {
-	Error `json:"error"`
+	Logger *log.Logger `json:"-"`
+	Error  `json:"error"`
+}
+
+// NewErr generate a new Err
+func NewJSONErr(err string, message string) JsonErr {
+	checksum := base64.StdEncoding.EncodeToString([]byte(time.Now().String()))
+	return JsonErr{Error: Error{checksum, err, message, 0}}
 }
 
 func (j JsonErr) Send(w io.Writer) Err {
@@ -26,15 +36,27 @@ func (j JsonErr) SendHTTP(rw http.ResponseWriter, code int) HTTPErr {
 }
 
 func (j JsonErr) Log() Err {
-	logg.Printf("\x1b[%s%s\x1b[0m \"%s\" ", "41m", j.Type, j.Message)
+	var logger *log.Logger
+	if j.Logger != nil {
+		logger = j.Logger
+	} else {
+		logger = logg
+	}
+	logger.Printf("\x1b[%s%s\x1b[0m \"%s\" ", "41m", j.Type, j.Message)
 	return j
 }
 
 func (j JsonErr) LogHTTP(req *http.Request) HTTPErr {
-	if runtime.GOOS != "windows" {
-		logg.Printf("\x1b[%s%s\x1b[0m %s (%s %s %s)", "41m", j.Error.Type, j.Error.Message, req.Method, req.RemoteAddr, req.RequestURI)
+	var logger *log.Logger
+	if j.Logger != nil {
+		logger = j.Logger
 	} else {
-		logg.Printf("!%s! %s (%s %s %s)", j.Error.Type, j.Error.Message, req.Method, req.RemoteAddr, req.RequestURI)
+		logger = logg
+	}
+	if runtime.GOOS != "windows" {
+		logger.Printf("\x1b[%s%s\x1b[0m %s (%s %s %s)", "41m", j.Error.Type, j.Error.Message, req.Method, req.RemoteAddr, req.RequestURI)
+	} else {
+		logger.Printf("!%s! %s (%s %s %s)", j.Error.Type, j.Error.Message, req.Method, req.RemoteAddr, req.RequestURI)
 	}
 	return j
 }

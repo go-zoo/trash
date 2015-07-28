@@ -18,7 +18,7 @@ func NewDump(w io.Writer, format string) *Dump {
 }
 
 func (d *Dump) Insert(t string, err string) {
-	d.Errs[time.Now().String()] = NewErr(t, err, d.Format)
+	d.Errs[time.Now().String()] = d.NewErr(t, err)
 }
 
 func (d *Dump) Remove(err Err) {
@@ -31,7 +31,7 @@ func (d *Dump) Get(err string) Err {
 
 func (d *Dump) Catch(err string, message string) {
 	key := time.Now().String()
-	errorr := NewErr(err, message, d.Format)
+	errorr := d.NewErr(err, message)
 	d.Errs[key] = errorr
 	d.Errs[key].Send(d.Writer)
 	d.Errs[key].Log()

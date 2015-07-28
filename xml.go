@@ -1,14 +1,24 @@
 package trash
 
 import (
+	"encoding/base64"
 	"encoding/xml"
 	"io"
+	"log"
 	"net/http"
 	"runtime"
+	"time"
 )
 
 type XmlErr struct {
-	Error `xml:"error"`
+	Logger *log.Logger `xml:"-"`
+	Error  `xml:"error"`
+}
+
+// NewHTTPErr generate a new HTTPErr
+func NewXMLPErr(err string, message string) XmlErr {
+	checksum := base64.StdEncoding.EncodeToString([]byte(time.Now().String()))
+	return XmlErr{Error: Error{checksum, err, message, 0}}
 }
 
 func (x XmlErr) Send(w io.Writer) Err {
@@ -25,17 +35,29 @@ func (x XmlErr) SendHTTP(rw http.ResponseWriter, code int) HTTPErr {
 	return x
 }
 
-func (x XmlErr) LogHTTP(req *http.Request) HTTPErr {
-	if runtime.GOOS != "windows" {
-		logg.Printf("\x1b[%s%s\x1b[0m %s (%s %s %s)", "41m", x.Error.Type, x.Error.Message, req.Method, req.RemoteAddr, req.RequestURI)
+func (x XmlErr) Log() Err {
+	var logger *log.Logger
+	if x.Logger != nil {
+		logger = x.Logger
 	} else {
-		logg.Printf("!%s! %s (%s %s %s)", x.Error.Type, x.Error.Message, req.Method, req.RemoteAddr, req.RequestURI)
+		logger = logg
 	}
+	logger.Printf("\x1b[%s%s\x1b[0m \"%s\" ", "41m", x.Type, x.Message)
 	return x
 }
 
-func (x XmlErr) Log() Err {
-	logg.Printf("\x1b[%s%s\x1b[0m \"%s\" ", "41m", x.Type, x.Message)
+func (x XmlErr) LogHTTP(req *http.Request) HTTPErr {
+	var logger *log.Logger
+	if x.Logger != nil {
+		logger = x.Logger
+	} else {
+		logger = logg
+	}
+	if runtime.GOOS != "windows" {
+		logger.Printf("\x1b[%s%s\x1b[0m %s (%s %s %s)", "41m", x.Error.Type, x.Error.Message, req.Method, req.RemoteAddr, req.RequestURI)
+	} else {
+		logger.Printf("!%s! %s (%s %s %s)", x.Error.Type, x.Error.Message, req.Method, req.RemoteAddr, req.RequestURI)
+	}
 	return x
 }
 
