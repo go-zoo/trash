@@ -12,6 +12,7 @@ Creating a new err.
   import "log"
 
   func main() {
+    // Takes a logger and data format (json, xml)
     t := trash.New(logger, "json")
 
     if 1 != 2 {
@@ -19,7 +20,7 @@ Creating a new err.
       t.NewErr(trash.GenericErr, "example err").Send(rw).Log()
 
       // Standalone inline HTTP error declaring
-      trash.NewJSONErr(trash.INVALID_DATA_ERR, "1 not equal 2 ...").LogHTTP(req).SendHTTP(rw, 406)
+      trash.NewJSONErr(trash.InvalidDataErr, "1 not equal 2 ...").LogHTTP(req).SendHTTP(rw, 406)
     }
   }
 ```
@@ -30,7 +31,7 @@ A dump need a `io.Writer` to save the errors stack.
   func main() {
     d := trash.NewDump(os.Stdout, "json")
     if 1 != 2 {
-      d.NewErr(trash.INVALID_DATA_ERR, "1 not equal 2")
+      d.NewErr(trash.InvalidDataErr, "1 not equal 2")
     }
     // Write the dump to the io.Writer
     d.Dump()
