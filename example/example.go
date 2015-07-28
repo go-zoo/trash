@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/go-zoo/trash"
@@ -9,13 +8,7 @@ import (
 
 func main() {
 	http.HandleFunc("/", func(rw http.ResponseWriter, req *http.Request) {
-		dump := trash.NewDump(rw, "json")
-		err := errors.New("test")
-
-		dump.Catch(err.Error())
-
-		errr := errors.New("BLABLABLA")
-		dump.Catch(errr.Error())
+		trash.NewErr(trash.NOT_FOUND_ERR, "Test Error", "json").SendHTTP(rw, 404).Log()
 	})
 	http.ListenAndServe(":8080", nil)
 }

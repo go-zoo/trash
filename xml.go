@@ -3,6 +3,7 @@ package trash
 import (
 	"encoding/xml"
 	"io"
+	"net/http"
 )
 
 type XmlErr struct {
@@ -11,6 +12,15 @@ type XmlErr struct {
 
 func (x XmlErr) Send(w io.Writer) Err {
 	xml.NewEncoder(w).Encode(x)
+	return x
+}
+
+func (x XmlErr) SendHTTP(rw http.ResponseWriter, code int) Err {
+	rw.Header().Set("Content-Type", "application/xml")
+	x.Code = code
+	rw.WriteHeader(code)
+	xml.NewEncoder(rw).Encode(x)
+
 	return x
 }
 
