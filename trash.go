@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"log"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -39,13 +40,16 @@ type Trash struct {
 // New create a new Trash with the provided logger and data format
 func New(logger *log.Logger, format string) *Trash {
 	t := &Trash{Logger: logger}
-	switch format {
+	switch strings.ToLower(format) {
 	case "json":
 		t.Type = "json"
 		t.format = t.jsonErr
 	case "xml":
 		t.Type = "xml"
 		t.format = t.xmlErr
+	default:
+		logger.Printf("[!] %s is a invalid format.\n", format)
+		return nil
 	}
 	return t
 }
