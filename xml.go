@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 	"io"
 	"net/http"
+	"runtime"
 )
 
 type XmlErr struct {
@@ -21,6 +22,15 @@ func (x XmlErr) SendHTTP(rw http.ResponseWriter, code int) Err {
 	rw.WriteHeader(code)
 	xml.NewEncoder(rw).Encode(x)
 
+	return x
+}
+
+func (x XmlErr) LogHTTP(req *http.Request) Err {
+	if runtime.GOOS != "windows" {
+		logg.Printf("\x1b[%s%s\x1b[0m %s (%s %s %s)", "41m", x.Error.Type, x.Error.Message, req.Method, req.RemoteAddr, req.RequestURI)
+	} else {
+		logg.Printf("!%s! %s (%s %s %s)", x.Error.Type, x.Error.Message, req.Method, req.RemoteAddr, req.RequestURI)
+	}
 	return x
 }
 

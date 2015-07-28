@@ -50,15 +50,3 @@ func NewErr(err string, message string, format string) Err {
 		return nil
 	}
 }
-
-func NewHttpErr(err string, message string, format string, httpCode int) Err {
-	checksum := base64.StdEncoding.EncodeToString([]byte(time.Now().String()))
-	switch format {
-	case "json":
-		return JsonErr{Error: Error{checksum, err, message, httpCode}}
-	case "xml":
-		return XmlErr{Error: Error{checksum, err, message, httpCode}}
-	default:
-		return nil
-	}
-}
