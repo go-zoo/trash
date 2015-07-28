@@ -20,6 +20,9 @@ Creating a new err.
       // Default Err
       t.NewErr(trash.GenericErr, "example err").Send(rw).Log()
 
+      // HTTP Err
+      t.NewErr(trash.GenericErr, "useless error").SendHTTP(rw, 404).Log(req)
+      
       // Standalone inline HTTP error declaring
       trash.NewJSONErr(trash.InvalidDataErr, "1 not equal 2 ...").LogHTTP(req).SendHTTP(rw, 406)
     }
