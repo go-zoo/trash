@@ -10,22 +10,25 @@ import (
 	"time"
 )
 
+// XmlErr data structure
 type XmlErr struct {
 	Logger  *log.Logger `xml:"-"`
 	errData `xml:"error"`
 }
 
-// NewHTTPErr generate a new HTTPErr
-func NewXMLPErr(err string, message string) XmlErr {
+// NewXMLErr generate a new HTTPErr
+func NewXMLErr(err string, message string) XmlErr {
 	checksum := base64.StdEncoding.EncodeToString([]byte(time.Now().String()))
 	return XmlErr{errData: errData{checksum, err, message, 0}}
 }
 
+// Send the Err to the provided io.Writer
 func (x XmlErr) Send(w io.Writer) Err {
 	xml.NewEncoder(w).Encode(x)
 	return x
 }
 
+// SendHTTP send the Err to the HTTP Client
 func (x XmlErr) SendHTTP(rw http.ResponseWriter, code int) HTTPErr {
 	rw.Header().Set("Content-Type", "application/xml")
 	x.Code = code
@@ -35,6 +38,7 @@ func (x XmlErr) SendHTTP(rw http.ResponseWriter, code int) HTTPErr {
 	return x
 }
 
+// Log the default infos
 func (x XmlErr) Log() Err {
 	var logger *log.Logger
 	if x.Logger != nil {
@@ -46,6 +50,7 @@ func (x XmlErr) Log() Err {
 	return x
 }
 
+// LogHTTP log the default infos plus the request
 func (x XmlErr) LogHTTP(req *http.Request) HTTPErr {
 	var logger *log.Logger
 	if x.Logger != nil {
@@ -61,6 +66,7 @@ func (x XmlErr) LogHTTP(req *http.Request) HTTPErr {
 	return x
 }
 
+// Error return the Err message
 func (x XmlErr) Error() string {
 	return x.Message
 }

@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// DefaultLogger is the logger use by default by trash
 var DefaultLogger = log.New(os.Stdout, "[TRASH] ", 0)
 
 type genErr interface {
