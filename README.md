@@ -2,8 +2,9 @@
 
 ### What is trash ?
 trash deal with logging, sending and stacking errors.
+Currently supporting json and xml format.
 
-![alt tag](http://www.elementaryos-fr.org/wp-content/uploads/2013/12/FreeGreatPicture.com-23409-trash.jpg)
+![alt tag](http://www.contemporarynomad.com/wp-content/uploads/2007/12/blog_trash_cow3.jpg)
 
 ### Example
 Creating a new err.
