@@ -16,9 +16,9 @@ type JsonErr struct {
 }
 
 // NewJSONErr generate a new JSONErr
-func NewJSONErr(err string, message string) JsonErr {
+func NewJSONErr(err string, message interface{}) JsonErr {
 	checksum := base64.StdEncoding.EncodeToString([]byte(time.Now().String()))
-	return JsonErr{errData: errData{checksum, err, message, 0}}
+	return JsonErr{errData: errData{checksum, err, extractMessage(message), 0}}
 }
 
 func (j JsonErr) Send(w io.Writer) Err {

@@ -11,6 +11,7 @@ Creating a new err.
 
 ``` go
   import "log"
+  import "errors"
 
   func main() {
     // Takes a logger and data format (json, xml)
@@ -18,8 +19,8 @@ Creating a new err.
 
     if 1 != 2 {
       // Default Err
-      // Arguments (Error Type, Error Message) -> (string, string)
-      t.NewErr(trash.GenericErr, "example err").Send(rw).Log()
+      // Arguments (Error Type, Error Message) -> (string, string or error)
+      t.NewErr(trash.GenericErr, errors.New("example err")).Send(rw).Log()
 
       // HTTP Err
       t.NewErr(trash.GenericErr, "useless error").SendHTTP(rw, 404).LogHTTP(req)

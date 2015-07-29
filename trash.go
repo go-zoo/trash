@@ -2,6 +2,7 @@ package trash
 
 import (
 	"encoding/base64"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -41,15 +42,15 @@ func New(logger *log.Logger, format string) *Trash {
 }
 
 // NewErr generate a standard Err
-func (t *Trash) NewErr(err string, message string) Err {
+func (t *Trash) NewErr(err string, message interface{}) Err {
 	er := t.format.(func(string, string) genErr)
-	return er(err, message)
+	return er(err, extractMessage(message))
 }
 
 // NewHTTPErr generate a new HTTPErr
-func (t *Trash) NewHTTPErr(err string, message string) HTTPErr {
+func (t *Trash) NewHTTPErr(err string, message interface{}) HTTPErr {
 	er := t.format.(func(string, string) genErr)
-	return er(err, message)
+	return er(err, extractMessage(message))
 }
 
 // NewErr generate a new Err
@@ -62,4 +63,16 @@ func (t *Trash) jsonErr(err string, message string) genErr {
 func (t *Trash) xmlErr(err string, message string) genErr {
 	checksum := base64.StdEncoding.EncodeToString([]byte(time.Now().String()))
 	return XmlErr{Logger: t.Logger, errData: errData{checksum, err, message, 0}}
+}
+
+func extractMessage(m interface{}) string {
+	switch mss := m.(type) {
+	case string:
+		return mss
+	case error:
+		return mss.Error()
+	case fmt.Stringer:
+		return mss.String()
+	}
+	return fmt.Sprintf("Invalid message type %s", m)
 }

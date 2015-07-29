@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/go-zoo/trash"
@@ -17,7 +18,7 @@ func main() {
 
 	http.HandleFunc("/json", func(rw http.ResponseWriter, req *http.Request) {
 		// Standalone JsonErr
-		trash.NewJSONErr(trash.BadRequestErr, "err002").SendHTTP(rw, 401).LogHTTP(req)
+		trash.NewJSONErr(trash.BadRequestErr, errors.New("Json Err !!")).SendHTTP(rw, 401).LogHTTP(req)
 	})
 
 	http.HandleFunc("/local", func(rw http.ResponseWriter, req *http.Request) {

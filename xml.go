@@ -17,9 +17,9 @@ type XmlErr struct {
 }
 
 // NewXMLErr generate a new HTTPErr
-func NewXMLErr(err string, message string) XmlErr {
+func NewXMLErr(err string, message interface{}) XmlErr {
 	checksum := base64.StdEncoding.EncodeToString([]byte(time.Now().String()))
-	return XmlErr{errData: errData{checksum, err, message, 0}}
+	return XmlErr{errData: errData{checksum, err, extractMessage(message), 0}}
 }
 
 // Send the Err to the provided io.Writer
