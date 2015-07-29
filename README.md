@@ -3,6 +3,7 @@
 ### What is trash ?
 trash deal with logging, sending and stacking errors.
 Currently supporting json and xml format.
+And also implementing the standard `error` interface.
 
 ![alt tag](http://lifescapesdesignblog.weebly.com/uploads/1/2/8/0/12806369/__6190365.jpg)
 

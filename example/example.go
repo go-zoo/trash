@@ -21,9 +21,19 @@ func main() {
 		trash.NewJSONErr(trash.BadRequestErr, errors.New("Json Err !!")).SendHTTP(rw, 401).LogHTTP(req)
 	})
 
+	http.HandleFunc("/error", func(w http.ResponseWriter, r *http.Request) {
+		createError("error interface from" + r.RemoteAddr)
+	})
+
 	http.HandleFunc("/local", func(rw http.ResponseWriter, req *http.Request) {
 		t.NewErr(trash.BadRequestErr, "local error").Log()
 	})
 
 	http.ListenAndServe(":8080", nil)
+}
+
+func createError(m string) error {
+	err := trash.NewJSONErr(trash.GenericErr, m)
+	err.Log()
+	return err
 }
