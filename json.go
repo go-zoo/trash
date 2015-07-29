@@ -3,6 +3,7 @@ package trash
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -63,4 +64,8 @@ func (j JsonErr) LogHTTP(req *http.Request) HTTPErr {
 
 func (j JsonErr) Error() string {
 	return j.Message
+}
+
+func (j JsonErr) FormatErr() string {
+	return fmt.Sprintf("%s [%s] %s %s \n", time.Now().String(), j.Type, j.Message, "json")
 }

@@ -3,13 +3,16 @@ package main
 import (
 	"errors"
 	"net/http"
+	"os"
 
 	"github.com/go-zoo/trash"
 )
 
 func main() {
 	// Create a new trash
+	file, _ := os.Create("err_log.txt")
 	t := trash.New(trash.DefaultLogger, "xml")
+	trash.NewDump(file, t)
 
 	http.HandleFunc("/xml", func(rw http.ResponseWriter, req *http.Request) {
 		// Err with config

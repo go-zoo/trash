@@ -3,6 +3,7 @@ package trash
 import (
 	"encoding/base64"
 	"encoding/xml"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -69,4 +70,8 @@ func (x XmlErr) LogHTTP(req *http.Request) HTTPErr {
 // Error return the Err message
 func (x XmlErr) Error() string {
 	return x.Message
+}
+
+func (x XmlErr) FormatErr() string {
+	return fmt.Sprintf("%s [%s] %s %s \n", time.Now().String(), x.Type, x.Message, "xml")
 }

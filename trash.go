@@ -13,6 +13,7 @@ import (
 var DefaultLogger = log.New(os.Stdout, "[TRASH] ", 0)
 
 type genErr interface {
+	FormatErr() string
 	Err
 	HTTPErr
 }
@@ -21,6 +22,7 @@ type genErr interface {
 type Trash struct {
 	Type   string
 	format interface{}
+	dump   *Dump
 	Logger *log.Logger
 }
 
@@ -44,13 +46,21 @@ func New(logger *log.Logger, format string) *Trash {
 // NewErr generate a standard Err
 func (t *Trash) NewErr(err string, message interface{}) Err {
 	er := t.format.(func(string, string) genErr)
-	return er(err, extractMessage(message))
+	e := er(err, extractMessage(message))
+	if t.dump != nil {
+		t.dump.errChan <- e
+	}
+	return e
 }
 
 // NewHTTPErr generate a new HTTPErr
 func (t *Trash) NewHTTPErr(err string, message interface{}) HTTPErr {
 	er := t.format.(func(string, string) genErr)
-	return er(err, extractMessage(message))
+	e := er(err, extractMessage(message))
+	if t.dump != nil {
+		t.dump.errChan <- e
+	}
+	return e
 }
 
 // NewErr generate a new Err
