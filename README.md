@@ -31,18 +31,20 @@ Creating a new err.
     }
   }
 ```
-You can also create a dump. Which is an error stack you want to process in the same way.
+You can also create a dump. Which is an error stack you want to backup.
 A dump need a `io.Writer` to save the errors stack.
 
 ``` go
   func main() {
-    d := trash.NewDump(os.Stdout, "json")
+    t := trash.New(logger, "json")
+    t2 := trash.New(logger, "xml")
+    // The dump will write all errors from the provided trash in a log file.
+    trash.NewDump(file, t, t2)
+
     if 1 != 2 {
-      d.NewErr(trash.InvalidDataErr, "1 not equal 2")
+      t.NewErr(trash.InvalidDataErr, "1 not equal 2")
     }
-    // Write the dump to the io.Writer
-    d.Dump()
-  }
+}
 
 ```
 
