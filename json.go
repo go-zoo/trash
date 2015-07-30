@@ -57,7 +57,7 @@ func (j JsonErr) LogHTTP(req *http.Request) HTTPErr {
 	if runtime.GOOS != "windows" {
 		logger.Printf("\x1b[%s%s\x1b[0m %s (%s %s %s)", "41m", j.errData.Type, j.errData.Message, req.Method, req.RemoteAddr, req.RequestURI)
 	} else {
-		logger.Printf("!%s! %s (%s %s %s)", j.errData.Type, j.errData.Message, req.Method, req.RemoteAddr, req.RequestURI)
+		logger.Printf("[%s] %s (%s %s %s)", j.errData.Type, j.errData.Message, req.Method, req.RemoteAddr, req.RequestURI)
 	}
 	return j
 }

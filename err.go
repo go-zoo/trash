@@ -21,6 +21,12 @@ const (
 	UnauthorizedAccessErr = "UNAUTHORIZED ACCESS ERROR"
 )
 
+type genErr interface {
+	Err
+	HTTPErr
+	FmtErr
+}
+
 // Err is the default interface for trash
 type Err interface {
 	Send(io.Writer) Err
@@ -32,6 +38,11 @@ type Err interface {
 type HTTPErr interface {
 	SendHTTP(http.ResponseWriter, int) HTTPErr
 	LogHTTP(*http.Request) HTTPErr
+}
+
+// FmtErr is the Err formatting interface{}
+type FmtErr interface {
+	FormatErr() string
 }
 
 // Error is the default error type

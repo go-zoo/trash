@@ -38,7 +38,7 @@ A dump need a `io.Writer` to save the errors stack.
   func main() {
     t := trash.New(logger, "json")
     t2 := trash.New(logger, "xml")
-    // The dump will write all errors from the provided trash in a log file.
+    // The dump will write all errors from the provided trash in a log file or any io.Writer.
     trash.NewDump(file, t, t2)
 
     if 1 != 2 {

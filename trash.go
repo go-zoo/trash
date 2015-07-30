@@ -12,12 +12,6 @@ import (
 // DefaultLogger is the logger use by default by trash
 var DefaultLogger = log.New(os.Stdout, "[TRASH] ", 0)
 
-type genErr interface {
-	FormatErr() string
-	Err
-	HTTPErr
-}
-
 // Trash defined the Trash data structure
 type Trash struct {
 	Type   string
