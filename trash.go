@@ -3,6 +3,7 @@ package trash
 import (
 	"encoding/base64"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"strings"
@@ -55,6 +56,16 @@ func (t *Trash) NewHTTPErr(err string, message interface{}) HTTPErr {
 		t.dump.errChan <- e
 	}
 	return e
+}
+
+func (t *Trash) NewShortErr(err string, message interface{}, rw io.Writer) {
+	er := t.format.(func(string, string) genErr)
+	e := er(err, extractMessage(message))
+	if t.dump != nil {
+		t.dump.errChan <- e
+	}
+	e.Log()
+	e.Send(rw)
 }
 
 // NewErr generate a new Err

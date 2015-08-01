@@ -47,7 +47,11 @@ func (x XmlErr) Log() Err {
 	} else {
 		logger = DefaultLogger
 	}
-	logger.Printf("\x1b[%s%s\x1b[0m %s ", "41m", x.Type, x.Message)
+	if runtime.GOOS != "windows" {
+		logger.Printf("\x1b[%s%s\x1b[0m %s ", "41m", x.Type, x.Message)
+	} else {
+		logger.Printf("[%s] %s", x.errData.Type, x.errData.Message)
+	}
 	return x
 }
 

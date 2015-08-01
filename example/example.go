@@ -32,6 +32,10 @@ func main() {
 		t.NewErr(trash.BadRequestErr, "local error").Log()
 	})
 
+	http.HandleFunc("/short", func(rw http.ResponseWriter, req *http.Request) {
+		t.NewShortErr(trash.GenericErr, "short Err", rw)
+	})
+
 	http.ListenAndServe(":8080", nil)
 }
 
