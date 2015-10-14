@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Trash by go-zoo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Trash</h1>
+      <h2 class="project-tagline">Errors dump for Go</h2>
+      <a href="https://github.com/go-zoo/trash" class="btn">View on GitHub</a>
+      <a href="https://github.com/go-zoo/trash/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/go-zoo/trash/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="trash--" class="anchor" href="#trash--" aria-hidden="true"><span class="octicon octicon-link"></span></a>trash <a href="https://godoc.org/github.com/go-zoo/trash"><img src="https://godoc.org/github.com/go-zoo/trash?status.svg" alt="GoDoc"></a> <a href="https://travis-ci.org/go-zoo/trash"><img src="https://travis-ci.org/go-zoo/trash.svg?branch=master" alt="Build Status"></a>
+</h1>
+
+<h3>
+<a id="what-is-trash-" class="anchor" href="#what-is-trash-" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is trash ?</h3>
+
+<p>trash deal with logging, sending and stacking errors.
+Currently supporting json and xml format.
+And also implementing the standard <code>error</code> interface.</p>
+
+<p><img src="http://lifescapesdesignblog.weebly.com/uploads/1/2/8/0/12806369/__6190365.jpg" alt="alt tag"></p>
+
+<h3>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h3>
+
+<p>Creating a new err.</p>
+
+<div class="highlight highlight-source-go"><pre>  <span class="pl-k">import</span> <span class="pl-s"><span class="pl-pds">"</span>log<span class="pl-pds">"</span></span>
+  <span class="pl-k">import</span> <span class="pl-s"><span class="pl-pds">"</span>errors<span class="pl-pds">"</span></span>
+
+  <span class="pl-k">func</span> <span class="pl-en">main</span>() {
+    <span class="pl-c">// Takes a logger and data format (json, xml)</span>
+    <span class="pl-smi">t</span> <span class="pl-k">:=</span> trash.<span class="pl-c1">New</span>(logger, <span class="pl-s"><span class="pl-pds">"</span>json<span class="pl-pds">"</span></span>)
+
+    <span class="pl-k">if</span> <span class="pl-c1">1</span> != <span class="pl-c1">2</span> {
+      <span class="pl-c">// Default Err</span>
+      <span class="pl-c">// Arguments (Error Type, Error Message) -&gt; (string, string or error)</span>
+      t.<span class="pl-c1">NewErr</span>(trash.<span class="pl-smi">GenericErr</span>, errors.<span class="pl-c1">New</span>(<span class="pl-s"><span class="pl-pds">"</span>example err<span class="pl-pds">"</span></span>)).<span class="pl-c1">Send</span>(rw).<span class="pl-c1">Log</span>()
+
+      <span class="pl-c">// HTTP Err</span>
+      t.<span class="pl-c1">NewErr</span>(trash.<span class="pl-smi">GenericErr</span>, <span class="pl-s"><span class="pl-pds">"</span>useless error<span class="pl-pds">"</span></span>).<span class="pl-c1">SendHTTP</span>(rw, <span class="pl-c1">404</span>).<span class="pl-c1">LogHTTP</span>(req)
+
+      <span class="pl-c">// Standalone inline HTTP error declaring</span>
+      trash.<span class="pl-c1">NewJSONErr</span>(trash.<span class="pl-smi">InvalidDataErr</span>, <span class="pl-s"><span class="pl-pds">"</span>1 not equal 2 ...<span class="pl-pds">"</span></span>).<span class="pl-c1">LogHTTP</span>(req).<span class="pl-c1">SendHTTP</span>(rw, <span class="pl-c1">406</span>)
+    }
+  }</pre></div>
+
+<p>You can also create a dump. Which is an error stack you want to backup.
+A dump need a <code>io.Writer</code> to save the errors stack.</p>
+
+<div class="highlight highlight-source-go"><pre>  <span class="pl-k">func</span> <span class="pl-en">main</span>() {
+    <span class="pl-smi">t</span> <span class="pl-k">:=</span> trash.<span class="pl-c1">New</span>(logger, <span class="pl-s"><span class="pl-pds">"</span>json<span class="pl-pds">"</span></span>)
+    <span class="pl-smi">t2</span> <span class="pl-k">:=</span> trash.<span class="pl-c1">New</span>(logger, <span class="pl-s"><span class="pl-pds">"</span>xml<span class="pl-pds">"</span></span>)
+    <span class="pl-c">// The dump will write all errors from the provided trash in a log file or any io.Writer.</span>
+    trash.<span class="pl-c1">NewDump</span>(file, t, t2)
+
+    <span class="pl-k">if</span> <span class="pl-c1">1</span> != <span class="pl-c1">2</span> {
+      t.<span class="pl-c1">NewErr</span>(trash.<span class="pl-smi">InvalidDataErr</span>, <span class="pl-s"><span class="pl-pds">"</span>1 not equal 2<span class="pl-pds">"</span></span>)
+    }
+}
+</pre></div>
+
+<h3>
+<a id="todo" class="anchor" href="#todo" aria-hidden="true"><span class="octicon octicon-link"></span></a>TODO</h3>
+
+<ul>
+<li>DOC</li>
+<li>More Testing</li>
+<li>Debugging</li>
+<li>Optimisation</li>
+</ul>
+
+<h3>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributing</h3>
+
+<ol>
+<li>Fork it</li>
+<li>Create your feature branch (git checkout -b my-new-feature)</li>
+<li>Write Tests!</li>
+<li>Commit your changes (git commit -am 'Add some feature')</li>
+<li>Push to the branch (git push origin my-new-feature)</li>
+<li>Create new Pull Request</li>
+</ol>
+
+<h3>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h3>
+
+<p>MIT</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/go-zoo/trash">Trash</a> is maintained by <a href="https://github.com/go-zoo">go-zoo</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
